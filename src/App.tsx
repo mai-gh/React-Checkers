@@ -2,6 +2,23 @@ import React from 'react';
 
 const board = new Array(8).fill(0).map(() => new Array(8).fill(0));
 
+
+const clickBlackPiece = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const e: {[index: string]:any} = event.target
+  console.log(e['id']);
+  const piece = document.querySelector<HTMLElement>(`#${e['id']}`);
+  piece!.style['border'] = '2px groove blue';
+}
+
+const clickDarkTile = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const e: {[index: string]:any} = event.target
+  console.log(e['id']);
+  const tile = document.querySelector<HTMLElement>(`#${e['id']}`);
+  const p7 = document.querySelector<HTMLElement>(`#player_two_7`);
+  tile!.appendChild(p7 as Node);
+  
+}
+
 const initBoard = () => {
   const cells = [];
   let colorTile = false;
@@ -19,19 +36,19 @@ const initBoard = () => {
       if (row < 2) {
         board[row][col] = 1;
         pieceKey = `player_one_${pc}`;
-        cells.push(<div key={tileKey} className="tile darkTile"> <div key={pieceKey} className="circle whitePiece" /> </div>);
+        cells.push(<div id={tileKey} key={tileKey} className="tile darkTile" onClick={clickDarkTile} > <div key={pieceKey} className="circle whitePiece" /> </div>);
         pc++;
       } else if (row >= 6) {
         board[row][col] = 2;
         pieceKey = `player_two_${pc - 8}`;
-        cells.push(<div key={tileKey} className="tile darkTile"> <div key={pieceKey} className="circle blackPiece" /> </div>);
+        cells.push(<div id={tileKey} key={tileKey} className="tile darkTile" onClick={clickDarkTile} > <div id={pieceKey} key={pieceKey} className="circle blackPiece" onClick={clickBlackPiece} /> </div>);
         pc++;
       } else {
         board[row][col] = 0;
-        cells.push(<div key={tileKey} className="tile darkTile" />);
+        cells.push(<div id={tileKey} key={tileKey} className="tile darkTile" onClick={clickDarkTile} />);
       }
     } else {
-      cells.push(<div key={tileKey} className="tile lightTile" />);
+      cells.push(<div id={tileKey} key={tileKey} className="tile lightTile" />);
     }
   };
   return cells;
