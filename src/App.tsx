@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 const board = new Array(8).fill(0).map(() => new Array(8).fill(0));
 let selectedPieceId: string = '';
+let turn = 0;
 
 /*
 interface gameStateObj {
@@ -23,14 +24,28 @@ window.gameState = window.gameState || {};
 //}
 
 
+const clickWhitePiece = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  if (turn % 2 === 1) {
+    deselectAll();
+    const e: {[index: string]:any} = event.target
+    //  console.log(e['id']);
+    const piece = document.querySelector<HTMLElement>(`#${e['id']}`); // redundant, fix later
+    piece!.style['border'] = '2px groove blue';
+    //  window.gameState.selectedPiece = e['id'];
+    selectedPieceId = e['id'];
+  }
+}
+
 const clickBlackPiece = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-  deselectAll();
-  const e: {[index: string]:any} = event.target
-//  console.log(e['id']);
-  const piece = document.querySelector<HTMLElement>(`#${e['id']}`); // redundant, fix later
-  piece!.style['border'] = '2px groove blue';
-//  window.gameState.selectedPiece = e['id'];
-  selectedPieceId = e['id'];
+  if (turn % 2 === 0) {
+    deselectAll();
+    const e: {[index: string]:any} = event.target
+    //  console.log(e['id']);
+    const piece = document.querySelector<HTMLElement>(`#${e['id']}`); // redundant, fix later
+    piece!.style['border'] = '2px groove blue';
+    //  window.gameState.selectedPiece = e['id'];
+    selectedPieceId = e['id'];
+  }
 }
 
 const clickDarkTile = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -44,6 +59,8 @@ const clickDarkTile = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (tile?.childNodes.length === 0) {
       const piece = document.querySelector<HTMLElement>(`#${selectedPieceId}`)
       tile!.appendChild(piece as Node);
+      deselectAll();
+      turn++;
     }
   }
 //  const p7 = document.querySelector<HTMLElement>(`#player_two_7`);
@@ -57,6 +74,7 @@ const deselectAll = () => {
 //  allPieces.forEach.style['border'] = '0px groove blue';
 //  Array.from(allPieces).forEach( (e as HTMLElement) => {e!.style['border'] = '0px groove blue'});
   allPieces.forEach( (e) => {e!.style['border'] = '0px groove blue'});
+  selectedPieceId = ''
 }
 
 const initBoard = () => {
@@ -76,7 +94,7 @@ const initBoard = () => {
       if (row < 2) {
         board[row][col] = 1;
         pieceKey = `player_one_${pc}`;
-        cells.push(<div id={tileKey} key={tileKey} className="tile darkTile" onClick={clickDarkTile}><div key={pieceKey} className="circle whitePiece" /></div>);
+        cells.push(<div id={tileKey} key={tileKey} className="tile darkTile" onClick={clickDarkTile}><div id={pieceKey} key={pieceKey} className="circle whitePiece" onClick={clickWhitePiece} /></div>);
         pc++;
       } else if (row >= 6) {
         board[row][col] = 2;
