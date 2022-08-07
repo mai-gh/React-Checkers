@@ -1,6 +1,9 @@
-const path = require("path");
+import * as path from 'path';
+import * as webpack from 'webpack';
 
-module.exports = {
+
+const config: webpack.Configuration = {
+  mode: "development",
   entry: {
     bundle: "./src/index.tsx",
   },
@@ -24,5 +27,6 @@ module.exports = {
     filename: "[name].js",
     path: path.resolve(__dirname, "dist"),
   },
-  mode: "development",
 };
+
+export default config;
